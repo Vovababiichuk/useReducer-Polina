@@ -9,7 +9,7 @@ interface AppState {
 }
 
 type AppAction = {
-	type: 'add_book',
+	type: 'add_book' | 'take_book',
 	payload: Book
 }
 
@@ -26,6 +26,9 @@ const books = [
 // reducer - якась інструкція, за якою змінюється стан. Отримуємо дані про подію, яка відбулася, і маємо повернути оновлений store. Через reducer dispatch-чер змінює store.
 // Було 10 книг в бібліотеці 1 видали залишилось 9 - ці розрахунки робить саме reducer.
 const reducer = (state: AppState, action: AppAction): AppState => {
+	console.log('reducer:state', state)
+	console.log('reducer:action', action)
+
 	switch(action.type) {
 		case 'add_book':
 			// action.payload - нова книга
@@ -33,7 +36,11 @@ const reducer = (state: AppState, action: AppAction): AppState => {
 				...state,
 				books: [...state.books, action.payload]
 			}
-		// case 'take_book':
+		case 'take_book':
+			return {
+				...state,
+				books: state.books.filter(book => book !== action.payload)
+			}
 		default: return state
 	}
 }
@@ -55,6 +62,15 @@ function App() {
 		})
 	}
 
+	const handlerTakeBook = (book: Book) => {
+		dispatch({
+			type: 'take_book',
+			payload: book
+		})
+	}
+
+	console.log('state', state)
+
 	return (
 		<>
 			<h3>Book list</h3>
@@ -72,7 +88,7 @@ function App() {
 				{state.books.map(book => (
 					<li key={book}>
 						<div>{book}</div>
-						<button>Issue a book</button>
+						<button onClick={() => handlerTakeBook(book)}>Take book</button>
 					</li>
 				))}
 			</ul>
