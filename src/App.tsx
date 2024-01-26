@@ -1,6 +1,18 @@
 import { useState, useReducer } from 'react'
 import './App.css'
 
+type Book = string;
+
+interface AppState {
+	books: Book[],
+	inventory: Book[]
+}
+
+type AppAction = {
+	type: 'add_book',
+	payload: Book
+}
+
 const books = [
 	'War and Peace',
 	'1984',
@@ -13,7 +25,7 @@ const books = [
 
 // reducer - якась інструкція, за якою змінюється стан. Отримуємо дані про подію, яка відбулася, і маємо повернути оновлений store. Через reducer dispatch-чер змінює store.
 // Було 10 книг в бібліотеці 1 видали залишилось 9 - ці розрахунки робить саме reducer.
-const reducer = (state, action) => {
+const reducer = (state: AppState, action: AppAction): AppState => {
 	switch(action.type) {
 		case 'add_book':
 			// action.payload - нова книга
@@ -33,9 +45,9 @@ function App() {
 	const [state, dispatch] = useReducer(reducer, {
 		books,
 		inventory: []
-	})
+	} as AppState)
 
-	const handleAddBook = (e) => {
+	const handleAddBook = (e: React.FormEvent) => {
 		e.preventDefault()
 		dispatch({
 			type: 'add_book',
