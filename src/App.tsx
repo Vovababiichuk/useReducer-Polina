@@ -112,8 +112,8 @@ function App() {
 
 			<h3>Inventory</h3>
 			{state.inventory.map(date => (
-				<ul className='inventory-list'>
-					<li className='inventory-item' key={date}>{date}</li>
+				<ul key={date} className='inventory-list'>
+					<li className='inventory-item' >{date}</li>
 				</ul>
 			))}
 			<button onClick={handleInventory} className='take'>
