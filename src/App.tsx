@@ -1,15 +1,15 @@
-import { useState, useReducer } from 'react'
+import { useReducer, useState } from 'react'
 import './App.css'
 
-type Book = string;
+type Book = string
 
 interface AppState {
-	books: Book[],
-	inventory: Book[]
+	books: Book[]
+	inventory: string[]
 }
 
 type AppAction = {
-	type: 'add_book' | 'take_book',
+	type: 'add_book' | 'take_book' | 'inventory'
 	payload: Book
 }
 
@@ -29,19 +29,25 @@ const reducer = (state: AppState, action: AppAction): AppState => {
 	console.log('reducer:state', state)
 	console.log('reducer:action', action)
 
-	switch(action.type) {
+	switch (action.type) {
 		case 'add_book':
 			// action.payload - нова книга
 			return {
 				...state,
-				books: [...state.books, action.payload]
+				books: [...state.books, action.payload],
 			}
 		case 'take_book':
 			return {
 				...state,
-				books: state.books.filter(book => book !== action.payload)
+				books: state.books.filter(book => book !== action.payload),
 			}
-		default: return state
+		case 'inventory':
+			return {
+				...state,
+				inventory: [...state.inventory, new Date().toLocaleString()],
+			}
+		default:
+			return state
 	}
 }
 
@@ -51,21 +57,28 @@ function App() {
 	// book - положым книги в наш store
 	const [state, dispatch] = useReducer(reducer, {
 		books,
-		inventory: []
+		inventory: [],
 	} as AppState)
 
 	const handleAddBook = (e: React.FormEvent) => {
 		e.preventDefault()
 		dispatch({
 			type: 'add_book',
-			payload: value
+			payload: value,
 		})
 	}
 
 	const handlerTakeBook = (book: Book) => {
 		dispatch({
 			type: 'take_book',
-			payload: book
+			payload: book,
+		})
+	}
+
+	const handleInventory = () => {
+		dispatch({
+			type: 'inventory',
+			payload: '',
 		})
 	}
 
@@ -81,20 +94,31 @@ function App() {
 					onChange={e => setValue(e.target.value)}
 					type='text'
 				/>
-				<button onClick={handleAddBook} className='add'>Add book</button>
+				<button onClick={handleAddBook} className='add'>
+					Add book
+				</button>
 			</form>
 
 			<ul className='list'>
 				{state.books.map(book => (
 					<li key={book}>
 						<div>{book}</div>
-						<button onClick={() => handlerTakeBook(book)}>Take book</button>
+						<button onClick={() => handlerTakeBook(book)} className='take'>
+							Take book
+						</button>
 					</li>
 				))}
 			</ul>
 
 			<h3>Inventory</h3>
-			<button>Take inventory</button>
+			{state.inventory.map(date => (
+				<ul className='inventory-list'>
+					<li className='inventory-item' key={date}>{date}</li>
+				</ul>
+			))}
+			<button onClick={handleInventory} className='take'>
+				Make inventory
+			</button>
 		</>
 	)
 }

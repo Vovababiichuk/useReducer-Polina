@@ -23,8 +23,8 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-button {
-  background-color: #5cf;
+button.take {
+  background: #5cf;
   border: none;
   padding: 8px 15px;
 }
@@ -47,5 +47,15 @@ input {
   margin-right: 10px;
 }
 h3 {
-  margin: 20px 0;
+  margin: 20px 0 10px 0;
+}
+
+.inventory-list {
+  margin-bottom: 2px;
+  margin-left: 2px;
+  list-style-type: none;
+}
+
+.inventory-list:last-of-type {
+  margin-bottom: 10px;
 }
