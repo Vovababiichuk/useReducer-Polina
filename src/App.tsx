@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import './App.css'
 
 const books = [
@@ -11,8 +11,37 @@ const books = [
 	'The Great Gatsby',
 ]
 
+// reducer - якась інструкція, за якою змінюється стан. Отримуємо дані про подію, яка відбулася, і маємо повернути оновлений store. Через reducer dispatch-чер змінює store.
+// Було 10 книг в бібліотеці 1 видали залишилось 9 - ці розрахунки робить саме reducer.
+const reducer = (state, action) => {
+	switch(action.type) {
+		case 'add_book':
+			// action.payload - нова книга
+			return {
+				...state,
+				books: [...state.books, action.payload]
+			}
+		// case 'take_book':
+		default: return state
+	}
+}
+
 function App() {
 	const [value, setValue] = useState('')
+	// initialArg - початкове значення стану. Можна масив використовувати, але буде об'єкт.
+	// book - положым книги в наш store
+	const [state, dispatch] = useReducer(reducer, {
+		books,
+		inventory: []
+	})
+
+	const handleAddBook = (e) => {
+		e.preventDefault()
+		dispatch({
+			type: 'add_book',
+			payload: value
+		})
+	}
 
 	return (
 		<>
@@ -24,11 +53,11 @@ function App() {
 					onChange={e => setValue(e.target.value)}
 					type='text'
 				/>
-				<button className='add'>Add book</button>
+				<button onClick={handleAddBook} className='add'>Add book</button>
 			</form>
 
 			<ul className='list'>
-				{books.map(book => (
+				{state.books.map(book => (
 					<li key={book}>
 						<div>{book}</div>
 						<button>Issue a book</button>
